@@ -25,7 +25,7 @@ fn get_state(state: &str) -> Vec<Vec<char>> {
     return result;
 }
 
-fn get_number(line: &str, words: (&str, &str, &str)) -> (u32, u32, u32) {
+fn get_number(line: &str, words: (&str, &str, &str)) -> (usize, usize, usize) {
     let word_length = words.0.len();
     let line = &line[word_length..];
     let space_index = line.find(" ").unwrap();
@@ -39,6 +39,15 @@ fn get_number(line: &str, words: (&str, &str, &str)) -> (u32, u32, u32) {
     let space_index = line.find(" ").unwrap_or(line.len());
     let third = line[..space_index].trim().parse().unwrap();
     return (first, second, third);
+}
+
+fn print_top_crates(stacks: Vec<Vec<char>>) {
+    print!("Top crates: ");
+    for stack in stacks {
+        let crate_label = stack.last().unwrap();
+        print!("{crate_label}");
+    }
+    println!();
 }
 
 pub fn part_1(contents: String) {
@@ -55,16 +64,22 @@ pub fn part_1(contents: String) {
             state[to_stack].push(moved_crate);
         }
     });
-    print!("Top crates: ");
-    for stack in state {
-        let char = stack.last().unwrap();
-        print!("{char}");
-    }
-    println!();
+    print_top_crates(state);
 }
 
-pub fn part_2() {
-    println!("Hello day 5, part 2");
+pub fn part_2(contents: String) {
+    let contents = contents.split_once("\n\n").unwrap();
+    let mut state = get_state(contents.0);
+    let instructions = contents.1;
+    instructions.lines().for_each(|instruction| {
+        let (crate_count, from_stack, to_stack) =
+            get_number(instruction, ("move ", " from ", " to "));
+
+        let start_index = state[from_stack - 1].len() - crate_count;
+        let mut moved_stack: Vec<char> = state[from_stack - 1].drain(start_index..).collect();
+        state[to_stack - 1].append(&mut moved_stack);
+    });
+    print_top_crates(state);
 }
 
 pub fn main() {
@@ -73,6 +88,6 @@ pub fn main() {
 
     println!("Day 5:");
     part_1(contents.clone());
-    part_2();
+    part_2(contents.clone());
     println!("");
 }
