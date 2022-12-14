@@ -1,37 +1,42 @@
 use std::fs;
 
-fn is_packet_start(check: [char; 4]) -> bool {
-    return !(check[1..].contains(&check[0])
-        || check[2..].contains(&check[1])
-        || &check[2] == &check[3]);
+fn has_duplicates(check: &Vec<char>) -> bool {
+    for i in 0..check.len() {
+        if check[(i + 1)..].contains(&check[i]) {
+            return true;
+        }
+    }
+    return false;
 }
 
-pub fn part_1(contents: String) {
+fn last_index_of_unique_characters_of_length(contents: String, length: usize) -> usize {
     let mut contents = contents.char_indices();
-    let packet_size = 4;
-    let mut index = packet_size;
+    let mut index = length;
 
-    let mut value_check = [
-        contents.next().unwrap().1,
-        contents.next().unwrap().1,
-        contents.next().unwrap().1,
-        contents.next().unwrap().1,
-    ];
-    while !is_packet_start(value_check) {
+    let mut value_check = Vec::new();
+    for _ in 0..length {
+        value_check.push(contents.next().unwrap().1);
+    }
+    while has_duplicates(&value_check) {
         let next = contents.next();
         if next.is_none() {
             break;
         }
         let (i, next_char) = next.unwrap();
-        value_check[i % packet_size] = next_char;
+        value_check[i % length] = next_char;
         index = i + 1;
     }
-
-    println!("Start of packet: {index}");
+    return index;
 }
 
-pub fn part_2() {
-    println!("Hello day 6, part 2");
+pub fn part_1(contents: String) {
+    let packet_start = last_index_of_unique_characters_of_length(contents, 4);
+    println!("Start of packet: {packet_start}");
+}
+
+pub fn part_2(contents: String) {
+    let message_start = last_index_of_unique_characters_of_length(contents, 14);
+    println!("Start of message: {message_start}");
 }
 
 pub fn main() {
@@ -40,6 +45,6 @@ pub fn main() {
 
     println!("Day 6:");
     part_1(contents.clone());
-    part_2();
+    part_2(contents.clone());
     println!();
 }
