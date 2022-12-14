@@ -1,7 +1,64 @@
 use std::fs;
 
-pub fn part_1() {
-    println!("Hello day 1, part 1");
+enum WinLoseOrDraw {
+    Win,
+    Lose,
+    Draw,
+}
+
+fn get_first_character(str: &str) -> char {
+    return str.to_string().chars().nth(0).unwrap();
+}
+
+fn get_outcome(me: char, opponent: char) -> WinLoseOrDraw {
+    if opponent == 'A' && me == 'Y' || opponent == 'B' && me == 'Z' || opponent == 'C' && me == 'X'
+    {
+        return WinLoseOrDraw::Win;
+    } else if opponent == 'A' && me == 'X'
+        || opponent == 'B' && me == 'Y'
+        || opponent == 'C' && me == 'Z'
+    {
+        return WinLoseOrDraw::Draw;
+    } else {
+        return WinLoseOrDraw::Lose;
+    }
+}
+
+fn get_round_points(me: char, opponent: char) -> i32 {
+    return match get_outcome(me, opponent) {
+        WinLoseOrDraw::Win => 6,
+        WinLoseOrDraw::Draw => 3,
+        WinLoseOrDraw::Lose => 0,
+    };
+}
+
+fn get_throw_points(me: char) -> i32 {
+    if me == 'X' {
+        return 1;
+    } else if me == 'Y' {
+        return 2;
+    } else {
+        return 3;
+    }
+}
+
+pub fn part_1(contents: String) {
+    let contents: Vec<&str> = contents.split("\n").collect();
+    let mut game_sum = 0;
+    for line in contents {
+        if line.len() == 0 {
+            continue;
+        } else {
+            let line: Vec<&str> = line.split(' ').collect();
+            let opponent = get_first_character(line[0]);
+            let me = get_first_character(line[1]);
+            let throw_points = get_round_points(me, opponent);
+            let round_points = get_throw_points(me);
+            let sum_points = round_points + throw_points;
+            game_sum += sum_points;
+        }
+    }
+    println!("Final score: {game_sum}");
 }
 
 pub fn part_2() {
@@ -12,6 +69,8 @@ pub fn main() {
     let file_path = "src/days/day_2/input.txt";
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
-    part_1();
+    println!("Day 2:");
+    part_1(contents);
     part_2();
+    println!("");
 }
