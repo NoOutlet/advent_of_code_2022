@@ -54,7 +54,7 @@ pub fn part_2(contents: String) {
         index += 1;
     }
 
-    println!("Sum of priorities: {sum}");
+    println!("Sum of badge priorities: {sum}");
 }
 
 pub fn main() {

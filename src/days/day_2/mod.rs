@@ -60,7 +60,7 @@ pub fn part_1(contents: String) {
             game_sum += sum_points;
         }
     }
-    println!("Final score: {game_sum}");
+    println!("Paper Rock Scissors score: {game_sum}");
 }
 
 pub fn part_2(contents: String) {
@@ -128,7 +128,7 @@ pub fn part_2(contents: String) {
             game_sum += sum_points;
         }
     }
-    println!("Final score: {game_sum}");
+    println!("Paper Rock Scissors score: {game_sum}");
 }
 
 pub fn main() {
